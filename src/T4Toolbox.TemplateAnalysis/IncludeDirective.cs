@@ -26,9 +26,22 @@ namespace T4Toolbox.TemplateAnalysis
             get { return this.GetAttributeValue(); }
         }
 
+        [KnownValues(typeof(IncludeDirective), nameof(GetKnownOnceValues))]
+        [Description("Used to ensure that a template is included only once, even if it’s invoked from more than one other include file.")]
+        public string Once
+        {
+            get { return this.GetAttributeValue(); }
+        }
+
         protected internal override void Accept(SyntaxNodeVisitor visitor)
         {
             visitor.VisitIncludeDirective(this);
+        }
+
+        private static IEnumerable<ValueDescriptor> GetKnownOnceValues()
+        {
+            yield return new ValueDescriptor("false", "The template will be included in each file that invokes it. False is the default.");
+            yield return new ValueDescriptor("true", "The template will only be inluced once, even if it’s invoked from more than one other include file.");
         }
     }
 }
